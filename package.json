@@ -61,10 +61,14 @@
     "videojs-vr": "^1.5.0"
   },
   "engines": {
-    "node": "8.* || >= 10.*"
+    "node": ">=16.13.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
     "after": "ember-cli-shims"
+  },
+  "volta": {
+    "node": "16.14.2",
+    "yarn": "1.22.18"
   }
 }

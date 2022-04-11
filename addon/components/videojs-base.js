@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import EmberError from '@ember/error';
-import jQuery from 'jquery';
 import layout from '../templates/components/videojs-base';
 import videojs from 'videojs';
 
@@ -90,7 +89,7 @@ export default Component.extend({
       playerOptions.liveui = true;
     }
 
-    let element = jQuery(this.element).find('video').get(0);
+    let element = document.querySelector(this.element).getElementsByTagName('video');
     let player = videojs(element, playerOptions);
 
     if ( this.get('height') ) {
@@ -104,7 +103,7 @@ export default Component.extend({
     if ( this.get('fluid') ) {
       player.fluid(this.get('fluid'));
     }
-        
+
     if ( this.get('aspectRatio') ) {
       player.aspectRatio(this.get('aspectRatio'));
     }
@@ -146,7 +145,7 @@ export default Component.extend({
   },
 
   updatePlayer() {
-    let element = jQuery(this.element).find('video').get(0);
+    let element = document.querySelector(this.element).getElementsByTagName('video');
     let player = videojs(element);
 
     let source = this.get('src');
