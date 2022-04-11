@@ -1,0 +1,82 @@
+<video
+  {{setup-video-player
+    ready=@ready
+    fluid=this.fluid
+    height=@height
+    width=@width
+    html5=@html5
+    aspectRatio=this.aspectRatio
+    vrProjection=this.vrProjection
+    abort=@abort
+    canplay=@canplay
+    canplaythrough=@canplaythrough
+    durationchange=@durationchange
+    emptied=@emptied
+    ended=@ended
+    error=@error
+    loadeddata=@loadeddata
+    loadedmetadata=@loadedmetadata
+    loadstart=@loadstart
+    pause=@pause
+    play=@play
+    playing=@playing
+    progress=@progress
+    ratechange=@ratechange
+    resize=@resize
+    seeked=@seeked
+    seeking=@seeking
+    stalled=@stalled
+    suspend=@suspend
+    timeupdate=@timeupdate
+    useractive=@useractive
+    userinactive=@userinactive
+    volumechange=@volumechange
+    waiting=@waiting
+  }}
+  class="video-js"
+  autoplay={{this.autoplay}}
+  controls={{this.controls}}
+  loop={{this.loop}}
+  muted={{this.muted}}
+  playsinline={{this.playsinline}}
+  preload="auto"
+  poster={{this.poster}}
+  data-setup="{}"
+  crossorigin={{this.crossorigin}}
+  tabindex="0"
+  {{on "click" (optional @click)}}
+  {{on "tap" (optional @tap)}}
+  ...attributes
+>
+  {{#if @src}}
+    <source src={{@src}} type={{@type}}>
+  {{/if}}
+
+  {{#if @sources}}
+    {{#each @sources as |item|}}
+      <source src={{item.src}} type={{item.type}}>
+    {{/each}}
+  {{/if}}
+
+  {{#if @textTrack}}
+    <track kind="captions" src={{@textTrack}} srclang="en" label="English" type="text/vtt" default>
+  {{/if}}
+
+  {{#if @textTracks}}
+    {{#each @textTracks as |textTrack|}}
+      <track
+        kind={{textTrack.kind}}
+        src={{textTrack.src}}
+        srclang={{textTrack.language}}
+        label={{textTrack.label}}
+        type={{textTrack.type}}
+        default
+      >
+    {{/each}}
+  {{/if}}
+
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank" rel="noopener">supports HTML5 video</a>
+  </p>
+</video>

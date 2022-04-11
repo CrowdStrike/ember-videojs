@@ -8,29 +8,27 @@ export default class ApplicationController extends Controller {
     { src: 'https://vjs.zencdn.net/v/oceans.webm', type: 'video/webm' },
   ];
 
+  player;
+
   @action
   play() {
   }
 
   @action
-  ready() {
+  ready(player) {
+    this.player = player;
   }
 
   @action
-  timeupdate(player/*, self, args*/) {
-    console.log('Time update: ' + Math.round(player.currentTime()/player.duration()*100) + '%');
-  }
-
-  @action
-  togglePlay(player) {
-    if (!player || typeof player.paused !== 'function') {
+  togglePlay() {
+    if (!this.player) {
       return;
     }
 
-    if (player.paused()) {
-      player.play();
+    if (this.player.paused()) {
+      this.player.play();
     } else {
-      player.pause();
+      this.player.pause();
     }
   }
 }

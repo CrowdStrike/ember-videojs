@@ -2,14 +2,13 @@
 
 <h3 id="title">No controls video</h3>
 
-<VideojsPlayer
+<VideoPlayer
   @sources={{this.sources}}
   @poster="https://vjs.zencdn.net/v/oceans.png"
   @controls={{false}}
   @autoplay={{false}}
   @play={{this.play}}
   @ready={{this.ready}}
-  @timeupdate={{this.timeupdate}}
   @click={{this.togglePlay}}
 />
 
@@ -17,14 +16,14 @@ Click video to play or pause
 <pre>
   <code>
     // app/templates/components/player.hbs
-    <VideojsPlayer
-      @sources={{this.sources}}
+    &lt;VideoPlayer
+      @sources=\{{this.sources}}
       @poster="https://vjs.zencdn.net/v/oceans.png"
       @controls={{false}}
       @autoplay={{false}}
-      @play={{this.play}}
-      @click={{this.togglePlay}}
-    />
+      @play=\{{this.play}}
+      @click=\{{this.togglePlay}}
+    /&gt;
   </code>
 </pre>
 
@@ -48,7 +47,7 @@ Click video to play or pause
 </pre>
 <h3 id="title">Normal video</h3>
 
-<VideojsPlayer
+<VideoPlayer
   @sources={{this.sources}}
   @poster="https://vjs.zencdn.net/v/oceans.png"
   @controls={{true}}
@@ -57,7 +56,7 @@ Click video to play or pause
 
 <h3 id="title">360 video</h3>
 
-<VideojsPlayer
+<VideoPlayer
   @src="https://s3-ap-southeast-2.amazonaws.com/files.wakp/stg/tjarntjarra/video-0395.mp4"
   @textTrack="https://s3-ap-southeast-2.amazonaws.com/files.wakp/stg/tjarntjarra/patjupirri-betty-west.m4v.txt"
   @type="video/mp4"
