@@ -2,68 +2,69 @@
 
 <h3 id="title">No controls video</h3>
 
-{{videojs-player
-  sources=sources
-  poster="https://vjs.zencdn.net/v/oceans.png"
-  controls=false
-  autoplay=false
-  play=(action "play")
-  ready=(action "ready")
-  timeupdate=(action "timeupdate")
-  click=(action "togglePlay")
-}}
+<VideojsPlayer
+  @sources={{this.sources}}
+  @poster="https://vjs.zencdn.net/v/oceans.png"
+  @controls={{false}}
+  @autoplay={{false}}
+  @play={{this.play}}
+  @ready={{this.ready}}
+  @timeupdate={{this.timeupdate}}
+  @click={{this.togglePlay}}
+/>
 
 Click video to play or pause
 <pre>
   <code>
     // app/templates/components/player.hbs
-    &lbrace;&lbrace;videojs-player
-      sources=sources
-      poster="https://vjs.zencdn.net/v/oceans.png"
-      controls=false
-      autoplay=false
-      play=(action "play")
-      click=(action "togglePlay")
-    &rbrace;&rbrace;
+    <VideojsPlayer
+      @sources={{this.sources}}
+      @poster="https://vjs.zencdn.net/v/oceans.png"
+      @controls={{false}}
+      @autoplay={{false}}
+      @play={{this.play}}
+      @click={{this.togglePlay}}
+    />
   </code>
 </pre>
 
 <pre>
   <code>
     // app/components/player.js
-    actions: {
-      play: function() {
-        console.log('Play');
-      },
-      togglePlay: function(player) {
-        if (player.paused()) {
-          player.play();
-        } else {
-          player.pause();
-        }
+    @action
+    play() {
+      console.log('Play');
+    }
+
+    @action
+    togglePlay(player) {
+      if (player.paused()) {
+        player.play();
+      } else {
+        player.pause();
       }
     }
   </code>
 </pre>
 <h3 id="title">Normal video</h3>
 
-{{videojs-player
-  sources=sources
-  poster="https://vjs.zencdn.net/v/oceans.png"
-  controls=true
-  autoplay=false
-}}
+<VideojsPlayer
+  @sources={{this.sources}}
+  @poster="https://vjs.zencdn.net/v/oceans.png"
+  @controls={{true}}
+  @autoplay={{false}}
+/>
 
 <h3 id="title">360 video</h3>
 
-{{videojs-player
-  src="https://s3-ap-southeast-2.amazonaws.com/files.wakp/stg/tjarntjarra/video-0395.mp4"
-  textTrack="https://s3-ap-southeast-2.amazonaws.com/files.wakp/stg/tjarntjarra/patjupirri-betty-west.m4v.txt"
-  type="video/mp4"
-  poster="https://vjs.zencdn.net/v/oceans.png"
-  vr-projection="360"
-  controls=false
-  autoplay=true
-}}
+<VideojsPlayer
+  @src="https://s3-ap-southeast-2.amazonaws.com/files.wakp/stg/tjarntjarra/video-0395.mp4"
+  @textTrack="https://s3-ap-southeast-2.amazonaws.com/files.wakp/stg/tjarntjarra/patjupirri-betty-west.m4v.txt"
+  @type="video/mp4"
+  @poster="https://vjs.zencdn.net/v/oceans.png"
+  @vrProjection="360"
+  @controls={{false}}
+  @autoplay={{true}}
+/>
 
 {{outlet}}
