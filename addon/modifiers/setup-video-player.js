@@ -1,7 +1,8 @@
-import 'video.js/dist/video-js.css';
+import videojs from 'video.js';
+import 'videojs-vr';
+
 import Modifier from 'ember-modifier';
 import { registerDestructor } from '@ember/destroyable';
-import videojs from 'video.js';
 import { tracked } from '@glimmer/tracking';
 
 function cleanup(instance) {
