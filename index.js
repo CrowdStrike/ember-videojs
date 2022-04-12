@@ -7,4 +7,10 @@ module.exports = {
   isDevelopingAddon() {
     return true;
   },
+
+  included() {
+    this._super.included.apply(this, arguments);
+
+    this._findHost().import('node_modules/video.js/dist/video-js.css');
+  },
 };
