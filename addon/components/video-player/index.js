@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 
-export default class VideojsPlayer extends Component {
+export default class VideoPlayer extends Component {
   defaults = {
     autoplay: false,
     controls: true,
@@ -27,9 +27,5 @@ export default class VideojsPlayer extends Component {
 
   get muted() {
     return this.args.muted ?? this.defaults.muted;
-  }
-
-  get vrProjection() {
-    return this.args.vrProjection ?? this.defaults.vrProjection;
   }
 }
