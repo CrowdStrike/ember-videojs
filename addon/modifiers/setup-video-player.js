@@ -1,30 +1,71 @@
 import videojs from 'video.js';
 import 'videojs-vr';
+import { modifier } from 'ember-modifier';
 
-import Modifier from 'ember-modifier';
-import { registerDestructor } from '@ember/destroyable';
-import { tracked } from '@glimmer/tracking';
+function setupPlayer(properties) {
+  const { element, html5, liveui, height, width, fluid, aspectRatio, vrProjection, playerEvents, ready, events } = properties;
+  const playerOptions = {};
 
-function cleanup(instance) {
-  instance.player?.off(instance.element);
-  instance.player?.dispose();
+  playerOptions.html5 = html5 || {};
+
+  if (liveui) {
+    playerOptions.liveui = true;
+  }
+
+  let player = videojs(element, playerOptions);
+
+  if (height) {
+    player.height(height);
+  }
+
+  if (width) {
+    player.width(width);
+  }
+
+  if (fluid) {
+    player.fluid(fluid);
+  }
+
+  if (aspectRatio) {
+    player.aspectRatio(aspectRatio);
+  }
+
+  let crossorigin = '';
+
+  // Register plugins
+  // Get global plugins from config.
+  if (vrProjection) {
+    if (typeof player.vr === 'function') {
+      crossorigin = 'anonymous';
+
+      player.vr({ projection: vrProjection });
+    } else {
+      // TODO: update to correct message
+      throw new Error('It looks like you are trying to play a VR video without the videojs-vr library. Please `npm install --save-dev videojs-vr` and add `app.import(\'node_modules/videojs-vr/dist/videojs-vr.min.js\');` to your ember-cli-build.js file.');
+    }
+  }
+
+  player.ready(() => {
+    for (const eventName of playerEvents) {
+      sendActionOnPlayerEvent({ player, events, eventName });
+    }
+
+    ready?.(player, { crossorigin });
+  });
+
+  return player;
 }
 
-export default class SetupVideoPlayer extends Modifier {
-  player;
-  element;
+function sendActionOnPlayerEvent({ player, events, eventName }) {
+  const listenerFunction = (...args) => {
+    events[eventName]?.(player, this, ...args);
+  };
 
-  ready;
-  src;
-  html5;
-  liveui;
-  height;
-  width;
-  fluid;
-  aspectRatio;
-  vrProjection;
+  player.on(eventName, listenerFunction);
+}
 
-  events = {
+export default modifier((element, _, named) => {
+  const events = {
     abort: null,
     canplay: null,
     canplaythrough: null,
@@ -54,112 +95,51 @@ export default class SetupVideoPlayer extends Modifier {
     tap: null,
   };
 
-  @tracked crossorigin;
+  const playerEvents = [
+    'abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied',
+    'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart',
+    'pause', 'play', 'playing', 'progress', 'ratechange', 'resize',
+    'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'useractive',
+    'userinactive', 'volumechange', 'waiting',
+    // @queenvictoria added
+    'click', 'tap',
+  ];
 
-  modify(element, _, named) {
-    this.element = element;
+  let {
+    ready,
+    src,
+    html5,
+    liveui,
+    height,
+    width,
+    fluid,
+    aspectRatio,
+    vrProjection,
+  } = named;
 
-    this.ready = named.ready;
-    this.src = named.src;
-    this.html5 = named.html5;
-    this.liveui = named.liveui;
-    this.height = named.height;
-    this.width = named.width;
-    this.fluid = named.fluid;
-    this.aspectRatio = named.aspectRatio;
-    this.vrProjection = named.vrProjection;
+  let player;
 
-    for (const [eventName] of Object.entries(named)) {
-      if ([Object.keys(this.events)].includes(eventName)) {
-        this.events[eventName] = named[eventName];
-      }
+  for (const [eventName] of Object.entries(named)) {
+    if ([Object.keys(events)].includes(eventName)) {
+      events[eventName] = named[eventName];
     }
-
-    if (this.player) {
-      this.updatePlayer();
-    } else {
-      this.initPlayer();
-    }
-
-    registerDestructor(this, cleanup);
   }
 
-  get playerEvents() {
-    return [
-      'abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied',
-      'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart',
-      'pause', 'play', 'playing', 'progress', 'ratechange', 'resize',
-      'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'useractive',
-      'userinactive', 'volumechange', 'waiting',
-      // @queenvictoria added
-      'click', 'tap',
-    ];
-  }
-
-  updatePlayer() {
-    let player = videojs(this.element);
+  if (player) {
+    let player = videojs(element);
 
     player.pause();
-    player.src(this.src);
+    player.src(src);
     player.load();
-  }
-
-  initPlayer() {
-    const playerOptions = {};
-
-    playerOptions.html5 = this.html5 || {};
-
-    if (this.liveui) {
-      playerOptions.liveui = true;
-    }
-
-    let player = videojs(this.element, playerOptions);
-
-    if (this.height) {
-      player.height(this.height);
-    }
-
-    if (this.width) {
-      player.width(this.width);
-    }
-
-    if (this.fluid) {
-      player.fluid(this.fluid);
-    }
-
-    if (this.aspectRatio) {
-      player.aspectRatio(this.aspectRatio);
-    }
-
-    // Register plugins
-    // Get global plugins from config.
-    if (this.vrProjection) {
-      if (typeof player.vr === 'function') {
-        this.crossorigin = 'anonymous';
-
-        player.vr({ projection: this.vrProjection });
-      } else {
-        // TODO: update to correct message
-        throw new Error('It looks like you are trying to play a VR video without the videojs-vr library. Please `npm install --save-dev videojs-vr` and add `app.import(\'node_modules/videojs-vr/dist/videojs-vr.min.js\');` to your ember-cli-build.js file.');
-      }
-    }
-
-    player.ready(() => {
-      for (const eventName of this.playerEvents) {
-        this.sendActionOnPlayerEvent(player, eventName, eventName);
-      }
-
-      this.ready?.(player, this);
+  } else {
+    player = setupPlayer({
+      element, html5, liveui, height, width, fluid, aspectRatio, vrProjection, playerEvents, ready, events,
     });
-
-    this.player = player;
   }
 
-  sendActionOnPlayerEvent(player, eventName) {
-    const listenerFunction = (...args) => {
-      this[eventName]?.(this.player, this, ...args);
-    };
+  return () => {
+    player?.off(instance.element);
+    player?.dispose();
+  };
+});
 
-    player.on(eventName, listenerFunction);
-  }
-}
