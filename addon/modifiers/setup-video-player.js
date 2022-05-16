@@ -12,23 +12,23 @@ function setupPlayer(properties) {
     playerOptions.liveui = true;
   }
 
-  let player = videojs(element, playerOptions);
+  if (fluid) {
+    playerOptions.fluid = fluid;
+  }
 
   if (height) {
-    player.height(height);
+    playerOptions.height = height;
   }
 
   if (width) {
-    player.width(width);
-  }
-
-  if (fluid) {
-    player.fluid(fluid);
+    playerOptions.width = width;
   }
 
   if (aspectRatio) {
-    player.aspectRatio(aspectRatio);
+    playerOptions.aspectRatio = aspectRatio;
   }
+
+  let player = videojs(element, playerOptions);
 
   let crossorigin = '';
 
